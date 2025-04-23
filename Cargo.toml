@@ -1,0 +1,12 @@
+[package]
+name = "cred_auth"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+argon2 = { version = "0.5.3", features = ["password-hash", "std"] }
+rand = "0.9.1"
+
+[dependencies.rusqlite]
+version = "0.34.0"
+features = ["bundled"]
