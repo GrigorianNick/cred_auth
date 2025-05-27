@@ -1,9 +1,5 @@
 pub mod handler;
 
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
-
 #[cfg(test)]
 mod tests {
     use crate::handler::Handler;
@@ -84,5 +80,31 @@ mod tests {
         let ret = handler.verify(String::from("user@name.com"), String::from("AnSecretPassword"));
         assert!(ret.is_ok());
         assert_eq!(ret.unwrap(), false);
+    }
+
+    #[test]
+    fn double_dbs()
+    {
+        let handler1 = Handler::new(handler::Storage::File(String::from("./dbldbl.sqlite")));
+        assert!(handler1.is_ok());
+        let handler2 = Handler::new(handler::Storage::File(String::from("./dbldbl.sqlite")));
+        assert!(handler2.is_ok());
+    }
+
+    #[test]
+    fn double_db_access()
+    {
+        let res1 = Handler::new(handler::Storage::File(String::from("./dbl.sqlite")));
+        assert!(res1.is_ok());
+        let handler1 = res1.unwrap();
+        let res2 = Handler::new(handler::Storage::File(String::from("./dbl.sqlite")));
+        assert!(res2.is_ok());
+        let handler2 = res2.unwrap();
+
+        let reg = handler1.register(String::from("user@name.com"), String::from("Hunter2"));
+        assert!(reg.is_ok());
+        let verify = handler2.verify(String::from("user@name.com"), String::from("Hunter2"));
+        assert!(verify.is_ok());
+        assert!(verify.unwrap());
     }
 }
